@@ -1,0 +1,16 @@
+n = -4:4;
+x = [0 0 0 1 1 1 0 0 0];
+h = [0 0 1 2 3 2 1 0 0];
+y = conv(x, h, 'same');
+subplot(3,1,1);
+stem(n, x, 'k-', 'filled');
+xlabel('n');
+ylabel('x[n]');
+subplot(3,1,2);
+stem(n, h, 'k-', 'filled');
+xlabel('n');
+ylabel('h[n]');
+subplot(3,1,3);
+stem(n, y(1:length(n)), 'k-', 'filled');
+xlabel('n');
+ylabel('y[n] = x[n]*h[n]');
