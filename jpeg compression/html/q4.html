@@ -1,0 +1,199 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>This code will calculate reconstructed image for c = 1 to 50</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-02"><meta name="DC.source" content="q4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>This code will calculate reconstructed image for c = 1 to 50</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Read the image</a></li><li><a href="#2">start loop for c</a></li></ul></div><h2 id="1">Read the image</h2><pre class="codeinput">image = imread(<span class="string">'LAKE.TIF'</span>);
+F = [16 11 10 16 24 40 51 61;
+    12 12 14 19 26 58 60 55;
+    14 13 16 24 40 57 69 56;
+    14 17 22 29 51 87 80 62;
+    18 22 37 56 68 109 103 77;
+    24 35 55 64 81 104 113 92;
+    49 64 78 87 103 121 120 101 ;
+    72 92 95 98 112 100 103 99];
+</pre><h2 id="2">start loop for c</h2><pre class="codeinput"><span class="keyword">for</span> c = 1:50
+    <span class="keyword">for</span> i = 1:8:512
+        <span class="keyword">for</span> j = 1:8:512
+            <span class="comment">% reconstruct image</span>
+            rec1 = uint8( myIDCT(myDCT_dequantisation( myDCT_quantisation( myDCT(image(i:i+7,j:j+7),create_dct_mat()),F,c ),F,c), create_dct_mat()));
+            im(i:i+7,j:j+7) = rec1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> c == 10
+        imwrite(uint8(im),<span class="string">'q4c10.TIFF'</span>);
+        disp(<span class="string">'We observe that as the c increases the perceptibility of the image decreases'</span>);
+        imshow(im) , title(<span class="string">'c = 10'</span>);
+    <span class="keyword">end</span>
+    rm(c) = RMSE(image,im);
+    ent(c) = My_entropy(im);
+    <span class="comment">%store values for rmse error and entropy</span>
+<span class="keyword">end</span>
+disp(rm);
+disp(ent);
+</pre><pre class="codeoutput">We observe that as the c increases the perceptibility of the image decreases
+  Columns 1 through 7
+
+    6.0237    7.4166    8.5218    9.4692   10.3720   11.1707   11.9116
+
+  Columns 8 through 14
+
+   12.7094   13.3712   14.0019   14.7476   15.4019   15.9309   16.8438
+
+  Columns 15 through 21
+
+   17.2720   18.0373   18.9014   18.7264   19.4756   20.7182   20.7181
+
+  Columns 22 through 28
+
+   20.7293   21.2989   22.2531   23.0944   23.5890   23.6070   23.7330
+
+  Columns 29 through 35
+
+   24.1290   24.8774   25.7325   26.3610   26.8703   27.6303   28.6594
+
+  Columns 36 through 42
+
+   29.6901   30.4450   30.7871   31.1806   31.6137   32.0839   32.6186
+
+  Columns 43 through 49
+
+   32.9391   33.1969   33.7439   34.0514   34.4048   34.9271   35.6089
+
+  Column 50
+
+   36.4541
+
+  Columns 1 through 7
+
+    7.4585    7.3681    7.1912    6.9665    6.7441    6.5651    6.4087
+
+  Columns 8 through 14
+
+    6.2253    6.0299    5.8671    5.7616    5.6339    5.5008    5.3990
+
+  Columns 15 through 21
+
+    5.1853    5.0799    4.9757    4.7438    4.6380    4.5453    4.3146
+
+  Columns 22 through 28
+
+    4.1976    4.1027    3.9082    3.6827    3.6083    3.5193    3.3934
+
+  Columns 29 through 35
+
+    3.2851    3.1538    3.0488    2.8153    2.7159    2.6631    2.6123
+
+  Columns 36 through 42
+
+    2.6097    2.5781    2.5273    2.4760    2.4077    2.3640    2.3213
+
+  Columns 43 through 49
+
+    2.2394    2.1465    1.9811    1.9284    1.9075    1.9012    1.9025
+
+  Column 50
+
+    1.8964
+
+</pre><img vspace="5" hspace="5" src="q4_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% This code will calculate reconstructed image for c = 1 to 50
+%% Read the image
+image = imread('LAKE.TIF');
+F = [16 11 10 16 24 40 51 61;
+    12 12 14 19 26 58 60 55;
+    14 13 16 24 40 57 69 56;
+    14 17 22 29 51 87 80 62;
+    18 22 37 56 68 109 103 77;
+    24 35 55 64 81 104 113 92;
+    49 64 78 87 103 121 120 101 ;
+    72 92 95 98 112 100 103 99];
+%% start loop for c
+for c = 1:50
+    for i = 1:8:512
+        for j = 1:8:512
+            % reconstruct image
+            rec1 = uint8( myIDCT(myDCT_dequantisation( myDCT_quantisation( myDCT(image(i:i+7,j:j+7),create_dct_mat()),F,c ),F,c), create_dct_mat()));
+            im(i:i+7,j:j+7) = rec1;
+        end
+    end
+    if c == 10
+        imwrite(uint8(im),'q4c10.TIFF');
+        disp('We observe that as the c increases the perceptibility of the image decreases');
+        imshow(im) , title('c = 10');
+    end
+    rm(c) = RMSE(image,im);
+    ent(c) = My_entropy(im);
+    %store values for rmse error and entropy
+end
+disp(rm); 
+disp(ent);
+
+
+
+##### SOURCE END #####
+--></body></html>

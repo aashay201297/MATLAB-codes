@@ -1,0 +1,195 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>This code is to prove that compression is better using DCT rather than DFT</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-02"><meta name="DC.source" content="q6.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>This code is to prove that compression is better using DCT rather than DFT</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">loop over all images</a></li><li><a href="#3">This loop reconstructs image using DFT compression</a></li><li><a href="#4">This loop reconstructs image using DCT compression</a></li><li><a href="#5">store the RMSE errors for both the reconstructed images</a></li><li><a href="#7">plot the graph error vs image number for both methods</a></li></ul></div><h2 id="1">loop over all images</h2><pre class="codeinput">F = [16 11 10 16 24 40 51 61;
+    12 12 14 19 26 58 60 55;
+    14 13 16 24 40 57 69 56;
+    14 17 22 29 51 87 80 62;
+    18 22 37 56 68 109 103 77;
+    24 35 55 64 81 104 113 92;
+    49 64 78 87 103 121 120 101 ;
+    72 92 95 98 112 100 103 99];
+<span class="keyword">for</span> xx = 1:25
+</pre><pre class="codeinput">    <span class="comment">% store path of image in str</span>
+    str = <span class="string">'images/'</span> + string(xx) + <span class="string">'.gif'</span>;
+    str = char(str);
+    image = imread(str);
+</pre><h2 id="3">This loop reconstructs image using DFT compression</h2><pre class="codeinput">    <span class="keyword">for</span> i = 1:8:512
+        <span class="keyword">for</span> j = 1:8:512
+            rec1 = fft2(image(i:i+7,j:j+7));
+            k = 8;
+            <span class="comment">% This loop reserves the values in upper triangle for every 8X8</span>
+            <span class="keyword">for</span> u = 1:8
+                <span class="keyword">for</span> v = 1:8
+                    <span class="keyword">if</span> v &gt; k
+                        upper(u,v) = 0;
+                    <span class="keyword">else</span>
+                        upper(u,v) = rec1(u,v);
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+                k = k - 1;
+            <span class="keyword">end</span>
+
+            im1(i:i+7,j:j+7) = abs(ifft2(upper));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+</pre><h2 id="4">This loop reconstructs image using DCT compression</h2><pre class="codeinput">    <span class="keyword">for</span> i = 1:8:512
+        <span class="keyword">for</span> j = 1:8:512
+            rec1 = myDCT(image(i:i+7,j:j+7), create_dct_mat());
+            k = 8;
+            <span class="comment">% This loop reserves the values in upper triangle for every 8X8</span>
+            <span class="keyword">for</span> u = 1:8
+                <span class="keyword">for</span> v = 1:8
+                    <span class="keyword">if</span> v &gt; k
+                        upper(u,v) = 0;
+                    <span class="keyword">else</span>
+                        upper(u,v) = rec1(u,v);
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+                k = k - 1;
+            <span class="keyword">end</span>
+            im2(i:i+7,j:j+7) = myIDCT(upper,create_dct_mat());
+
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+</pre><h2 id="5">store the RMSE errors for both the reconstructed images</h2><pre class="codeinput">    error(xx) = RMSE(uint8(im1), image);
+    error2(xx) = RMSE(uint8(im2), image);
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><h2 id="7">plot the graph error vs image number for both methods</h2><pre class="codeinput">X = 1:25;
+plot(X,error,<span class="string">'g'</span>,X,error2,<span class="string">'r'</span>);
+disp(<span class="string">'Thus we can say that DCT compression is better that DFT compression'</span>);
+</pre><pre class="codeoutput">Thus we can say that DCT compression is better that DFT compression
+</pre><img vspace="5" hspace="5" src="q6_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% This code is to prove that compression is better using DCT rather than DFT
+%% loop over all images
+F = [16 11 10 16 24 40 51 61;
+    12 12 14 19 26 58 60 55;
+    14 13 16 24 40 57 69 56;
+    14 17 22 29 51 87 80 62;
+    18 22 37 56 68 109 103 77;
+    24 35 55 64 81 104 113 92;
+    49 64 78 87 103 121 120 101 ;
+    72 92 95 98 112 100 103 99];
+for xx = 1:25
+    % store path of image in str
+    str = 'images/' + string(xx) + '.gif';
+    str = char(str);
+    image = imread(str);
+    %% This loop reconstructs image using DFT compression
+    for i = 1:8:512
+        for j = 1:8:512
+            rec1 = fft2(image(i:i+7,j:j+7));
+            k = 8;
+            % This loop reserves the values in upper triangle for every 8X8
+            for u = 1:8
+                for v = 1:8
+                    if v > k
+                        upper(u,v) = 0;
+                    else
+                        upper(u,v) = rec1(u,v);
+                    end
+                end
+                k = k - 1;
+            end
+            
+            im1(i:i+7,j:j+7) = abs(ifft2(upper));
+        end
+    end
+    %% This loop reconstructs image using DCT compression
+    for i = 1:8:512
+        for j = 1:8:512
+            rec1 = myDCT(image(i:i+7,j:j+7), create_dct_mat());
+            k = 8;
+            % This loop reserves the values in upper triangle for every 8X8
+            for u = 1:8
+                for v = 1:8
+                    if v > k
+                        upper(u,v) = 0;
+                    else
+                        upper(u,v) = rec1(u,v);
+                    end
+                end
+                k = k - 1;
+            end
+            im2(i:i+7,j:j+7) = myIDCT(upper,create_dct_mat());
+            
+            
+        end
+    end
+    %% store the RMSE errors for both the reconstructed images
+    error(xx) = RMSE(uint8(im1), image);
+    error2(xx) = RMSE(uint8(im2), image);
+end
+%% plot the graph error vs image number for both methods
+X = 1:25;
+plot(X,error,'g',X,error2,'r');
+disp('Thus we can say that DCT compression is better that DFT compression');
+##### SOURCE END #####
+--></body></html>
